@@ -1,42 +1,128 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Global Layout */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to bottom, #e0f2ff, #ffffff); /* Light sky background */
+  font-family: 'Inter', sans-serif;
+}
+
+/* Navbar Styles */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  color: white;
+  font-weight: bold;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+  transition: top 0.4s ease, opacity 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-links {
+  display: flex;
+  gap: 2rem;
+  font-size: 1rem;
+  justify-content: center;
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.navbar-link {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.navbar-link:hover {
+  color: #90cdf4; /* Light blue hover */
+}
+
+.navbar-visible {
+  top: 0;
+  opacity: 1;
+}
+
+.navbar-hidden {
+  top: -80px;
+  opacity: 0;
+}
+
+/* Header Section */
+.header {
+  padding: 8rem 2rem 4rem 2rem;
+  background: transparent;
   text-align: center;
+  color: #1e293b; /* Darker text for contrast */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.header-title {
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.header-subtitle {
+  margin-top: 1.5rem;
+  font-size: 5rem;
+  font-weight: bold;
+  color: #334155; /* Slate color for elegance */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Main Section */
+.main-content {
+  flex-grow: 1;
+  padding: 4rem 2rem;
+  background-color: #f9fafb;
 }
 
-.card {
-  padding: 2em;
+.main-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 2.5rem;
+  text-align: center;
+  color: #1e293b;
 }
 
-.read-the-docs {
-  color: #888;
+.stay-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+/* Book button styling */
+.book-button {
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.book-button:hover {
+  cursor: pointer;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.book-button:active {
+  transform: translateY(0);
+}
+
+/* Footer */
+.footer {
+  background-color: #e2e8f0;
+  text-align: center;
+  color: #64748b;
+  font-size: 1rem;
+  padding: 1.5rem 0;
 }
