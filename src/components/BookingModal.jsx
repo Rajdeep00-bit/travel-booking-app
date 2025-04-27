@@ -38,10 +38,10 @@ function BookingModal({ stay, onClose, onConfirm }) {
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+      <div className="bg-white p-6 rounded shadow-md w-full max-w-lg sm:max-w-md">
         <h2 className="text-2xl font-semibold mb-4">Book {stay.name}</h2>
 
-        {/* Success Message */}
+        {/* Success Message - Add this block */}
         {bookingSuccess && (
           <div className="bg-green-100 p-4 rounded mb-4 text-green-800">
             <h3 className="text-lg font-semibold">Booking Successful!</h3>
@@ -55,7 +55,7 @@ function BookingModal({ stay, onClose, onConfirm }) {
           </div>
         )}
 
-        {/* Form Inputs */}
+        {/* Form Inputs - Show this when bookingSuccess is false */}
         {!bookingSuccess && (
           <>
             <input
@@ -96,7 +96,7 @@ function BookingModal({ stay, onClose, onConfirm }) {
               </button>
               <button
                 onClick={handleSubmit}
-                className="px-4 py-2 bg-blue-500 text-white rounded"
+                className="px-4 py-2 bg-blue-500 text-white rounded w-full sm:w-auto"
                 disabled={isSaving}
               >
                 {isSaving ? "Saving..." : "Confirm Booking"}
