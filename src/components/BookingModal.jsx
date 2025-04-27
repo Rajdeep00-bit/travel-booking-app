@@ -1,4 +1,3 @@
-// BookingModal.jsx
 import React, { useState } from 'react';
 
 function BookingModal({ stay, onClose, onConfirm }) {
@@ -6,8 +5,10 @@ function BookingModal({ stay, onClose, onConfirm }) {
   const [email, setEmail] = useState('');
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
+  const [isSaving, setIsSaving] = useState(false); // New state for loader
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setIsSaving(true); // Start saving
     const bookingData = {
       stayId: stay.id,
       stayName: stay.name,
@@ -16,9 +17,10 @@ function BookingModal({ stay, onClose, onConfirm }) {
       checkIn,
       checkOut,
     };
-    onConfirm(bookingData);
+    await onConfirm(bookingData); // Wait for confirmation
+    setIsSaving(false); // Stop saving after completion
 
-    // ✅ Clear the form fields after confirm
+    // Clear the form fields after confirm
     setName('');
     setEmail('');
     setCheckIn('');
@@ -69,8 +71,9 @@ function BookingModal({ stay, onClose, onConfirm }) {
           <button
             onClick={handleSubmit}
             className="px-4 py-2 bg-blue-500 text-white rounded"
+            disabled={isSaving} // Disable button while saving
           >
-            Confirm Booking
+            {isSaving ? "Saving..." : "Confirm Booking"} {/* Show loader text */}
           </button>
         </div>
       </div>
