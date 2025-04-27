@@ -3,51 +3,30 @@ import stays from './data/stays';
 import StayCard from './components/StayCard';
 import BookingModal from './components/BookingModal';
 import { db } from './firebase';
-import { collection, addDoc, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
 function App() {
   const [selectedStay, setSelectedStay] = useState(null);
-  const [priceFilter, setPriceFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('recommended');
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredStays, setFilteredStays] = useState(stays);
   const [userBookings, setUserBookings] = useState([]);
   const [showBookings, setShowBookings] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Apply filters and sorting to stays
+  // Apply search query to stays
   useEffect(() => {
     let result = [...stays];
-    
-    // Apply search query
+
     if (searchQuery) {
-      result = result.filter(stay => 
-        stay.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      result = result.filter(stay =>
+        stay.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         stay.location.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    
-    // Apply price filter
-    if (priceFilter === 'under-200') {
-      result = result.filter(stay => stay.price < 200);
-    } else if (priceFilter === '200-300') {
-      result = result.filter(stay => stay.price >= 200 && stay.price <= 300);
-    } else if (priceFilter === 'over-300') {
-      result = result.filter(stay => stay.price > 300);
-    }
-    
-    // Apply sorting
-    if (sortBy === 'price-low') {
-      result.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-high') {
-      result.sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'rating') {
-      result.sort((a, b) => b.rating - a.rating);
-    }
-    
+
     setFilteredStays(result);
-  }, [priceFilter, sortBy, searchQuery]);
-  
+  }, [searchQuery]);
+
   // Fetch user bookings
   const fetchBookings = async () => {
     setLoading(true);
@@ -55,7 +34,7 @@ function App() {
       // In a real app with auth, you'd filter by user ID
       const bookingsRef = collection(db, "bookings");
       const querySnapshot = await getDocs(bookingsRef);
-      
+
       const bookings = [];
       querySnapshot.forEach((doc) => {
         bookings.push({
@@ -63,7 +42,7 @@ function App() {
           ...doc.data()
         });
       });
-      
+
       setUserBookings(bookings);
     } catch (error) {
       console.error("Error fetching bookings:", error);
@@ -71,7 +50,7 @@ function App() {
       setLoading(false);
     }
   };
-  
+
   // Cancel booking
   const cancelBooking = async (bookingId) => {
     if (window.confirm("Are you sure you want to cancel this booking?")) {
@@ -99,12 +78,12 @@ function App() {
       // Add the booking data to Firestore
       const bookingsRef = collection(db, "bookings");
       await addDoc(bookingsRef, bookingData);
-      
+
       // Refresh bookings list if we're showing them
       if (showBookings) {
         fetchBookings();
       }
-      
+
       return true;
     } catch (error) {
       console.error("Error adding booking: ", error);
@@ -132,12 +111,6 @@ function App() {
               </svg>
               <h1 className="text-2xl font-bold">UpInTheSky Travel</h1>
             </div>
-            <button 
-              onClick={toggleBookingsView}
-              className="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-50 transition-colors"
-            >
-              {showBookings ? "Browse Stays" : "My Bookings"}
-            </button>
           </div>
         </div>
       </header>
@@ -147,18 +120,18 @@ function App() {
           // Bookings View
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-6">My Bookings</h2>
-            
+
             {loading && (
               <div className="text-center py-10">
                 <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
                 <p className="mt-2 text-gray-600">Loading your bookings...</p>
               </div>
             )}
-            
+
             {!loading && userBookings.length === 0 && (
               <div className="text-center py-10 bg-white rounded-lg shadow">
                 <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 0 002-2M9 5a2 2 0 012-2h2a2 0 012 2" />
                 </svg>
                 <h3 className="mt-2 text-lg font-medium text-gray-900">No bookings found</h3>
                 <p className="mt-1 text-gray-500">You don't have any travel bookings yet.</p>
@@ -172,15 +145,15 @@ function App() {
                 </div>
               </div>
             )}
-            
+
             {!loading && userBookings.length > 0 && (
               <div className="grid grid-cols-1 gap-6">
                 {userBookings.map(booking => (
                   <div key={booking.id} className="bg-white rounded-lg shadow-md p-6">
                     <div className="flex flex-col md:flex-row">
-                      <img 
-                        src={booking.stayImage} 
-                        alt={booking.stayName} 
+                      <img
+                        src={booking.stayImage}
+                        alt={booking.stayName}
                         className="h-40 w-full md:w-64 object-cover rounded-lg mb-4 md:mb-0 md:mr-6"
                         onError={(e) => {e.target.src = "/api/placeholder/400/320"}}
                       />
@@ -224,7 +197,7 @@ function App() {
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-white p-8 mb-8">
               <h2 className="text-3xl font-bold mb-4">Find Your Perfect Getaway</h2>
               <p className="text-lg mb-6">Discover amazing places to stay around the world</p>
-              
+
               <div className="bg-white rounded-lg p-2 flex flex-col md:flex-row">
                 <input
                   type="text"
@@ -233,42 +206,12 @@ function App() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="bg-blue-600 text-white px-4 py-2 rounded mt-2 md:mt-0 md:ml-2">
-                  Search
+                <button
+                  onClick={toggleBookingsView}
+                  className="bg-blue-600 text-white px-4 py-2 rounded mt-2 md:mt-0 md:ml-2"
+                >
+                  My Bookings
                 </button>
-              </div>
-            </div>
-
-            {/* Filters */}
-            <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                <div className="mb-4 md:mb-0">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price Range</label>
-                  <select
-                    className="border border-gray-300 rounded p-2"
-                    value={priceFilter}
-                    onChange={(e) => setPriceFilter(e.target.value)}
-                  >
-                    <option value="all">All Prices</option>
-                    <option value="under-200">Under $200</option>
-                    <option value="200-300">$200 - $300</option>
-                    <option value="over-300">Over $300</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sort by</label>
-                  <select
-                    className="border border-gray-300 rounded p-2"
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                  >
-                    <option value="recommended">Recommended</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="rating">Top Rated</option>
-                  </select>
-                </div>
               </div>
             </div>
 
@@ -285,20 +228,20 @@ function App() {
                 <StayCard key={stay.id} stay={stay} onBook={handleBookClick} />
               ))}
             </div>
-            
+
             {filteredStays.length === 0 && (
               <div className="text-center py-10">
                 <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <h3 className="mt-2 text-lg font-medium text-gray-900">No stays found</h3>
-                <p className="mt-1 text-gray-500">Try adjusting your search or filters.</p>
+                <p className="mt-1 text-gray-500">Try adjusting your search.</p>
               </div>
             )}
           </>
         )}
       </div>
-      
+
       {/* Footer */}
       <footer className="bg-gray-800 text-white mt-12 py-8">
         <div className="container mx-auto px-6">
@@ -361,7 +304,7 @@ function App() {
       </footer>
 
       {selectedStay && (
-        <BookingModal 
+        <BookingModal
           stay={selectedStay}
           onClose={handleCloseModal}
           onConfirm={handleConfirmBooking}
